@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Streamline Player Pro</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <title>Privacy-First Epic Player</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --accent: #00f2ff;
@@ -19,147 +19,66 @@
             background-color: var(--bg-dark);
             color: var(--text-main);
             font-family: 'Inter', sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            margin: 0; padding: 0;
+            display: flex; flex-direction: column; align-items: center;
             min-height: 100vh;
         }
 
-        header {
-            width: 100%;
-            padding: 40px 20px 20px;
-            display: flex;
-            justify-content: center;
-        }
+        header { width: 100%; padding: 40px 20px 20px; display: flex; justify-content: center; }
 
         .search-wrapper {
-            position: relative;
-            width: 100%;
-            max-width: 500px;
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            padding: 4px 8px;
+            position: relative; width: 100%; max-width: 500px;
+            background: var(--card-bg); border: 1px solid var(--border);
+            border-radius: 16px; display: flex; align-items: center; padding: 4px 8px;
             backdrop-filter: blur(10px);
         }
 
         input {
-            flex: 1;
-            background: transparent;
-            border: none;
-            color: white;
-            padding: 12px 16px;
-            font-size: 15px;
-            outline: none;
+            flex: 1; background: transparent; border: none; color: white;
+            padding: 12px 16px; font-size: 15px; outline: none;
         }
 
-        .clear-btn {
-            cursor: pointer;
-            font-size: 22px;
-            color: var(--text-dim);
-            padding: 0 12px;
-        }
+        .clear-btn { cursor: pointer; font-size: 22px; color: var(--text-dim); padding: 0 12px; }
 
         .go-btn {
-            background: var(--accent);
-            border: none;
-            color: #000;
-            font-weight: 700;
-            padding: 10px 20px;
-            border-radius: 12px;
-            cursor: pointer;
+            background: var(--accent); border: none; color: #000;
+            font-weight: 700; padding: 10px 20px; border-radius: 12px; cursor: pointer;
         }
 
-        main {
-            width: 100%;
-            max-width: 900px;
-            padding: 0 20px 40px;
-            box-sizing: border-box;
-        }
+        main { width: 100%; max-width: 900px; padding: 0 20px 40px; box-sizing: border-box; }
 
         .player-container {
-            width: 100%;
-            aspect-ratio: 16 / 9;
-            background: #000;
-            border-radius: 24px;
-            overflow: hidden;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.6);
-            margin-bottom: 30px;
-            border: 1px solid var(--border);
+            width: 100%; aspect-ratio: 16 / 9; background: #000;
+            border-radius: 24px; overflow: hidden; margin-bottom: 30px;
+            border: 1px solid var(--border); box-shadow: 0 30px 60px rgba(0,0,0,0.6);
         }
 
-        .dashboard {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 16px;
-        }
+        .dashboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
 
-        .card {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 20px;
-        }
+        .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 20px; padding: 20px; }
 
         .card-title {
-            font-size: 12px;
-            font-weight: 700;
-            color: var(--text-dim);
-            text-transform: uppercase;
-            letter-spacing: 1.2px;
-            display: block;
-            margin-bottom: 15px;
+            font-size: 11px; font-weight: 700; color: var(--text-dim);
+            text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 15px; display: block;
         }
 
-        .btn-group {
-            display: flex;
-            gap: 8px;
+        select, button.action {
+            background: #111; border: 1px solid var(--border); color: white;
+            padding: 12px; border-radius: 12px; width: 100%; cursor: pointer; font-size: 13px;
         }
 
-        button.action {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid var(--border);
-            color: var(--text-main);
-            padding: 12px;
-            border-radius: 12px;
-            cursor: pointer;
-            flex: 1;
-            font-size: 13px;
-        }
+        .btn-group { display: flex; gap: 8px; }
 
-        .active-mode {
-            background: var(--accent) !important;
-            color: #000 !important;
-        }
+        .active-mode { background: var(--accent) !important; color: #000 !important; font-weight: 700; }
 
-        select {
-            background: #111;
-            border: 1px solid var(--border);
-            color: white;
-            padding: 12px;
-            border-radius: 12px;
-            width: 100%;
-            margin-bottom: 10px;
-            appearance: none;
-        }
-
-        #timerStatus {
-            font-size: 13px;
-            color: var(--accent);
-            text-align: center;
-            margin-top: 10px;
-        }
+        #timerStatus { font-size: 13px; color: var(--accent); text-align: center; margin-top: 10px; }
     </style>
 </head>
 <body>
 
     <header>
         <div class="search-wrapper">
-            <input type="text" id="urlInput" placeholder="Paste YouTube Link...">
+            <input type="text" id="urlInput" placeholder="Secure Video URL...">
             <span class="clear-btn" onclick="clearInput()">×</span>
             <button class="go-btn" onclick="loadVideo()">LOAD</button>
         </div>
@@ -172,29 +91,21 @@
 
         <div class="dashboard">
             <div class="card">
-                <span class="card-title">System Control</span>
-                <div class="btn-group">
-                    <button class="action" id="motionBtn" onclick="initMotion()">Enable Shake</button>
-                    <button class="action" onclick="toggleFullscreen()">Full Screen</button>
-                </div>
+                <span class="card-title">Isolated Controls</span>
+                <button class="action" id="motionBtn" onclick="initMotion()">Activate Shake Sensor</button>
             </div>
 
             <div class="card">
                 <span class="card-title">Settings</span>
-                <select id="speed" onchange="changeSpeed(this.value)">
+                <select id="speed" onchange="changeSpeed(this.value)" style="margin-bottom:10px;">
                     <option value="1" selected>Speed: Normal</option>
-                    <option value="1.5">1.5x</option>
-                    <option value="2">2x</option>
-                    <option value="3">3x (Force)</option>
-                    <option value="4">4x (Force)</option>
+                    <option value="2">2.0x</option>
+                    <option value="3">3.0x (Force)</option>
+                    <option value="4">4.0x (Force)</option>
                 </select>
-                
-                <select id="qualitySelect" onchange="changeQuality(this.value)">
+                <select id="quality" onchange="changeQuality(this.value)">
                     <option value="default">Quality: Auto</option>
                     <option value="tiny">144p</option>
-                    <option value="small">240p</option>
-                    <option value="medium">360p</option>
-                    <option value="large">480p</option>
                     <option value="hd720">720p HD</option>
                     <option value="hd1080">1080p Full HD</option>
                 </select>
@@ -207,7 +118,7 @@
                     <button class="action" onclick="setSleep(30)">30m</button>
                     <button class="action" onclick="setSleep(60)">60m</button>
                 </div>
-                <div id="timerStatus">Timer inactive</div>
+                <div id="timerStatus">No active timer</div>
             </div>
         </div>
     </main>
@@ -215,69 +126,55 @@
     <script>
         let player, sleepTimer, shakeCount = 0, lastShakeTime = 0;
 
+        // Load YouTube API
         var tag = document.createElement('script');
         tag.src = "https://www.youtube.com/iframe_api";
         document.head.appendChild(tag);
 
         function onYouTubeIframeAPIReady() {
             player = new YT.Player('player', {
-                height: '100%', width: '100%',
+                height: '100%',
+                width: '100%',
+                host: 'https://www.youtube-nocookie.com', // Privacy Enhanced Domain
                 videoId: '',
-                playerVars: { 'autoplay': 1, 'controls': 1, 'modestbranding': 1, 'rel': 0 },
+                playerVars: { 
+                    'autoplay': 1, 
+                    'controls': 1, 
+                    'modestbranding': 1, 
+                    'rel': 0,
+                    'origin': window.location.origin, // Lock data to this page
+                    'iv_load_policy': 3 
+                },
             });
-        }
-
-        function extractId(url) {
-            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-            const match = url.match(regExp);
-            return (match && match[2].length == 11) ? match[2] : url; 
         }
 
         function loadVideo() {
             const val = document.getElementById('urlInput').value.trim();
-            const id = extractId(val);
+            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+            const match = val.match(regExp);
+            const id = (match && match[2].length == 11) ? match[2] : val;
             if(id) player.loadVideoById(id);
         }
 
-        function clearInput() {
-            document.getElementById('urlInput').value = "";
+        function clearInput() { document.getElementById('urlInput').value = ""; }
+        
+        function changeSpeed(val) { 
+            player.setPlaybackRate(parseFloat(val)); 
+            // Attempt to force higher speed if API lags
+            if(parseFloat(val) > 2) {
+                const video = document.querySelector('video');
+                if(video) video.playbackRate = parseFloat(val);
+            }
         }
-
-        // --- FIXED SPEED LOGIC ---
-        function changeSpeed(val) {
-            const rate = parseFloat(val);
-            // Official API call
-            player.setPlaybackRate(rate);
-
-            // Hack for 3x and 4x (Injects into the iframe's video element)
-            const iframe = document.getElementById('player');
-            try {
-                // This only works if the browser allows cross-origin script execution (rare)
-                // Fallback: Using the internal YouTube player message system
-                player.getIframe().contentWindow.postMessage(JSON.stringify({
-                    event: 'command',
-                    func: 'setPlaybackRate',
-                    args: [rate, true]
-                }), '*');
-            } catch(e) { console.log("Force speed attempted"); }
-        }
-
-        function changeQuality(val) {
-            if (player && player.setPlaybackQuality) player.setPlaybackQuality(val);
-        }
-
-        function toggleFullscreen() {
-            const el = document.querySelector('.player-container');
-            if (el.requestFullscreen) el.requestFullscreen();
-            else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
-        }
+        
+        function changeQuality(val) { if(player.setPlaybackQuality) player.setPlaybackQuality(val); }
 
         function setSleep(mins) {
             clearTimeout(sleepTimer);
             document.getElementById('timerStatus').innerText = mins + "m Timer Active";
             sleepTimer = setTimeout(() => {
                 player.pauseVideo();
-                document.getElementById('timerStatus').innerText = "Stopped by Timer";
+                document.getElementById('timerStatus').innerText = "Paused by Timer";
             }, mins * 60 * 1000);
         }
 
@@ -290,21 +187,26 @@
 
         function startShake() {
             const btn = document.getElementById('motionBtn');
-            btn.innerText = "Shake Ready";
+            btn.innerText = "📳 Monitoring Motion";
             btn.classList.add('active-mode');
 
             window.addEventListener('devicemotion', (e) => {
                 const move = Math.abs(e.accelerationIncludingGravity.x) + Math.abs(e.accelerationIncludingGravity.y);
-                if (move > 28) {
+                
+                if (move > 28) { 
                     const now = Date.now();
                     if (now - lastShakeTime > 500) {
                         shakeCount++;
                         lastShakeTime = now;
-                        if (navigator.vibrate) navigator.vibrate(10); 
+                        
+                        // Vibration strictly on the 3rd shake
                         if (shakeCount >= 3) {
                             const state = player.getPlayerState();
                             state === 1 ? player.pauseVideo() : player.playVideo();
-                            if (navigator.vibrate) navigator.vibrate(60); 
+                            
+                            // LIGHT 20ms VIBRATION ONLY HERE
+                            if (navigator.vibrate) navigator.vibrate(20); 
+                            
                             shakeCount = 0;
                         }
                     }
@@ -314,3 +216,4 @@
     </script>
 </body>
 </html>
+
