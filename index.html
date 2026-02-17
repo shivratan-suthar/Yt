@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ZenStream Motion</title>
+    <title>ZenStream Cinema</title>
     <style>
         :root {
             --bg: #000000;
@@ -24,64 +24,117 @@
 
         /* --- HEADER --- */
         .header {
-            padding: 15px 20px; text-align: center;
+            padding: 12px 20px; text-align: center;
             border-bottom: 1px solid #333; font-weight: 600;
+            font-size: 14px;
         }
         .header span { color: var(--primary); }
 
         /* --- SEARCH --- */
-        .search-area { padding: 15px 20px; }
+        .search-area { padding: 10px 15px; background: #000; z-index: 10; }
         .input-wrapper {
             display: flex; background: var(--surface);
-            border-radius: 12px; padding: 0 12px; align-items: center; height: 44px;
+            border-radius: 10px; padding: 0 12px; align-items: center; height: 40px;
         }
         input {
             flex: 1; background: transparent; border: none; color: white;
             font-size: 16px; padding: 10px 0; outline: none; min-width: 0;
         }
         .clear-btn {
-            color: var(--text-sec); font-size: 20px; padding: 10px;
-            cursor: pointer; display: none; line-height: 1; font-weight: bold;
+            color: var(--text-sec); font-size: 18px; padding: 8px;
+            cursor: pointer; display: none; font-weight: bold;
         }
         .btn-go {
             color: var(--primary); font-weight: bold; border: none;
             background: transparent; padding-left: 15px; cursor: pointer;
-            font-size: 15px; border-left: 1px solid #333; margin-left: 5px;
+            font-size: 14px; border-left: 1px solid #333; margin-left: 5px;
         }
 
-        /* --- PLAYER --- */
+        /* --- PLAYER CONTAINER --- */
         .player-container {
             flex: 1; display: flex; flex-direction: column;
-            justify-content: center; padding: 0 20px;
+            justify-content: flex-start; /* Align top for better mobile view */
+            position: relative;
         }
+        
+        /* The Video Wrapper */
         .video-wrapper {
-            width: 100%; aspect-ratio: 16/9; background: #111;
-            border-radius: 12px; overflow: hidden; box-shadow: 0 10px 40px rgba(255,149,0, 0.1);
+            width: 100%; 
+            /* 16:9 Aspect Ratio trick */
+            padding-bottom: 56.25%; 
+            background: #000;
+            position: relative;
+            z-index: 5;
         }
-        #yt-player { width: 100%; height: 100%; }
+        
+        /* When Fullscreen is active, this class is added */
+        .video-wrapper.fullscreen {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            width: 100%; height: 100%; padding-bottom: 0; z-index: 999;
+        }
 
-        .track-info { margin-top: 25px; text-align: center; }
-        .track-title { font-size: 18px; font-weight: 600; margin-bottom: 5px; }
+        #yt-player { 
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+        }
+
+        /* --- CONTROLS AREA --- */
+        .info-area { padding: 15px 20px; flex: 1; overflow-y: auto; }
+
+        .track-info { text-align: center; margin-bottom: 20px; }
+        .track-title { font-size: 18px; font-weight: 600; margin-bottom: 5px; line-height: 1.3; }
         .track-artist { color: var(--text-sec); font-size: 14px; }
 
-        /* --- SHAKE TOGGLE --- */
-        .shake-toggle {
-            margin-top: 20px; display: flex; align-items: center; justify-content: center; gap: 10px;
-            font-size: 13px; color: var(--text-sec); background: #111;
-            padding: 8px 15px; border-radius: 20px; align-self: center;
-            cursor: pointer; border: 1px solid #333;
+        .controls-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;
+            max-width: 400px; margin: 0 auto;
         }
-        .shake-toggle.active { border-color: var(--primary); color: var(--primary); }
-        .switch {
-            width: 30px; height: 16px; background: #333; border-radius: 10px;
-            position: relative; transition: 0.3s;
+        
+        .icon-btn {
+            background: var(--surface); border: none; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; gap: 8px; 
+            font-size: 11px; color: var(--text-sec); cursor: pointer;
+            padding: 15px 10px; border-radius: 12px;
         }
-        .switch::after {
-            content:''; position: absolute; top: 2px; left: 2px; width: 12px; height: 12px;
-            background: #fff; border-radius: 50%; transition: 0.3s;
+        .icon-btn svg { width: 24px; height: 24px; fill: var(--text); }
+        .icon-btn.active { background: #333; color: var(--primary); }
+        .icon-btn.active svg { fill: var(--primary); }
+        
+        /* REC FAB (Floating Button) */
+        .rec-fab {
+            position: absolute; bottom: 20px; right: 20px;
+            background: var(--primary); color: #000;
+            width: 50px; height: 50px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 15px rgba(255,149,0,0.4); z-index: 50;
+            font-weight: bold; cursor: pointer;
         }
-        .shake-toggle.active .switch { background: var(--primary); }
-        .shake-toggle.active .switch::after { left: 16px; }
+
+        /* Rec Sheet */
+        .rec-sheet {
+            position: absolute; bottom: 0; left: 0; right: 0; top: 60%; 
+            background: rgba(20,20,20,0.98); border-top: 1px solid #333;
+            z-index: 60; display: none; flex-direction: column;
+        }
+        .rec-header { padding: 15px; border-bottom: 1px solid #333; display: flex; justify-content: space-between; font-weight: bold; font-size: 14px; }
+        .rec-list { overflow-y: auto; flex: 1; padding: 10px; }
+        .rec-item { display: flex; gap: 10px; padding: 10px; margin-bottom: 5px; border-radius: 8px; }
+        .rec-item:active { background: #333; }
+        .rec-thumb { width: 100px; height: 56px; background: #000; border-radius: 4px; object-fit: cover; }
+        .rec-meta { font-size: 13px; display: flex; flex-direction: column; justify-content: center; overflow: hidden; }
+        .rec-txt { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+        /* MODAL */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.8); z-index: 1000;
+            display: none; align-items: flex-end;
+        }
+        .modal-sheet {
+            background: var(--surface); width: 100%; border-radius: 20px 20px 0 0;
+            padding: 20px 0 40px; animation: slideUp 0.3s;
+        }
+        @keyframes slideUp { from {transform:translateY(100%)} to {transform:translateY(0)} }
+        .timer-opt { width: 100%; padding: 15px; background: none; border: none; color: white; border-bottom: 1px solid #333; text-align: left; font-size: 16px; }
 
     </style>
 </head>
@@ -91,134 +144,174 @@
 
     <div class="search-area">
         <div class="input-wrapper">
-            <input type="text" id="urlInput" placeholder="Paste YouTube Link" oninput="toggleClearBtn()">
+            <input type="text" id="urlInput" placeholder="Paste Link" oninput="toggleClearBtn()">
             <span class="clear-btn" id="clearBtn" onclick="clearInput()">×</span>
-            <button class="btn-go" onclick="loadVideo()">PLAY</button>
+            <button class="btn-go" onclick="loadUserVideo()">GO</button>
         </div>
     </div>
 
     <div class="player-container">
-        <div class="video-wrapper">
+        <div class="video-wrapper" id="videoContainer">
             <div id="yt-player"></div>
         </div>
 
-        <div class="track-info">
-            <div class="track-title" id="vidTitle">Ready to Play</div>
-            <div class="track-artist" id="vidAuthor">Paste a link above</div>
-            
-            <div style="display:flex; justify-content:center;">
-                <div class="shake-toggle" id="shakeBtn" onclick="toggleShake()">
-                    <span>Shake to Play/Pause</span>
-                    <div class="switch"></div>
-                </div>
+        <div class="info-area">
+            <div class="track-info">
+                <div class="track-title" id="vidTitle">Ready</div>
+                <div class="track-artist" id="vidAuthor">Paste a link to start</div>
+            </div>
+
+            <div class="controls-grid">
+                <button class="icon-btn" onclick="toggleFullscreen()">
+                    <svg viewBox="0 0 24 24"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
+                    <span>Full Scr</span>
+                </button>
+
+                <button class="icon-btn" onclick="openTimerModal()" id="sleepBtn">
+                    <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm-.22-13h-.06c-.4 0-.72.32-.72.72v4.72l2.85 2.85c.28.28.74.28 1.02 0 .28-.28.28-.74 0-1.02l-2.37-2.37V7.72c0-.4-.32-.72-.72-.72z"/></svg>
+                    <span>Timer</span>
+                    <div id="timerDisplay" style="color:var(--primary); font-size:10px; display:none">00:00</div>
+                </button>
+
+                <button class="icon-btn" onclick="toggleShake()" id="shakeBtn">
+                    <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+                    <span>Shake</span>
+                    <div id="shakeStatus" style="color:var(--primary); font-size:10px; display:none">ON</div>
+                </button>
+            </div>
+        </div>
+
+        <div class="rec-fab" onclick="toggleRecs()">
+            <svg viewBox="0 0 24 24" style="width:24px;height:24px;fill:black"><path d="M4 18l8.5-6L4 6v12zm9-12v12l8.5-6L13 6z"/></svg>
+        </div>
+
+        <div class="rec-sheet" id="recSheet">
+            <div class="rec-header">
+                <span>Up Next</span>
+                <span onclick="toggleRecs()" style="color:var(--primary)">Close</span>
+            </div>
+            <div class="rec-list" id="recList">
+                <div style="padding:20px;text-align:center;color:#666">Play a video first</div>
             </div>
         </div>
     </div>
 
+    <div class="modal-overlay" id="timerModal" onclick="if(event.target.id==='timerModal')this.style.display='none'">
+        <div class="modal-sheet">
+            <div style="padding:15px; text-align:center; color:#888; border-bottom:1px solid #333; font-weight:bold;">Sleep Timer</div>
+            <button class="timer-opt" onclick="setTimer(15)">15 Minutes</button>
+            <button class="timer-opt" onclick="setTimer(30)">30 Minutes</button>
+            <button class="timer-opt" onclick="setTimer(60)">60 Minutes</button>
+            <button class="timer-opt" onclick="setTimer(0)">Stop Timer</button>
+            <button onclick="document.getElementById('timerModal').style.display='none'" style="width:calc(100% - 30px); margin:15px; padding:15px; background:#333; color:white; border:none; border-radius:12px; font-weight:bold;">Cancel</button>
+        </div>
+    </div>
+
     <script>
-        // --- 1. SEARCH BAR ---
-        function toggleClearBtn() {
-            const input = document.getElementById('urlInput');
-            document.getElementById('clearBtn').style.display = input.value.length > 0 ? 'block' : 'none';
-        }
-        function clearInput() {
-            const input = document.getElementById('urlInput');
-            input.value = ''; input.focus(); toggleClearBtn();
-        }
+        // --- UI UTILS ---
+        function toggleClearBtn(){ document.getElementById('clearBtn').style.display=document.getElementById('urlInput').value.length>0?'block':'none'; }
+        function clearInput(){ const i=document.getElementById('urlInput'); i.value=''; i.focus(); toggleClearBtn(); }
 
-        // --- 2. YOUTUBE API ---
-        var tag = document.createElement('script');
-        tag.src = "https://www.youtube.com/iframe_api";
-        var firstScriptTag = document.getElementsByTagName('script')[0];
-        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
+        // --- YOUTUBE API ---
+        var tag=document.createElement('script'); tag.src="https://www.youtube.com/iframe_api";
+        var firstScriptTag=document.getElementsByTagName('script')[0]; firstScriptTag.parentNode.insertBefore(tag,firstScriptTag);
         var player;
-        function onYouTubeIframeAPIReady() {
+        
+        function onYouTubeIframeAPIReady(){
             player = new YT.Player('yt-player', {
-                height: '100%', width: '100%',
-                videoId: '',
-                playerVars: { 'playsinline': 1, 'controls': 1, 'modestbranding': 1, 'fs': 0 }
+                height: '100%', width: '100%', videoId: '',
+                playerVars: { 
+                    'playsinline': 1, // Required for iOS non-fullscreen
+                    'controls': 1,    // Enable native controls (needed for PiP)
+                    'modestbranding': 1,
+                    'fs': 1           // Allow native fullscreen button
+                }
             });
         }
 
-        function loadVideo() {
-            let val = document.getElementById('urlInput').value;
-            let id = val.match(/(?:youtu\.be\/|youtube\.com(?:\/embed\/|\/v\/|\/watch\?v=|\&v=))([\w-]{11})/);
-            let videoId = id ? id[1] : val;
-            
-            if(videoId.length === 11) {
-                player.loadVideoById(videoId);
-                document.getElementById('vidTitle').innerText = "Playing...";
-                document.getElementById('vidAuthor').innerText = "YouTube content";
-            }
-        }
-
-        // --- 3. SHAKE DETECTION LOGIC ---
-        let shakeEnabled = false;
-        let lastX, lastY, lastZ;
-        let lastUpdate = 0;
-        const SHAKE_THRESHOLD = 15; // Sensitivity (Lower is more sensitive)
-
-        function toggleShake() {
-            shakeEnabled = !shakeEnabled;
-            const btn = document.getElementById('shakeBtn');
-            
-            if (shakeEnabled) {
-                btn.classList.add('active');
-                // Request permission for iOS 13+
-                if (typeof DeviceMotionEvent.requestPermission === 'function') {
-                    DeviceMotionEvent.requestPermission()
-                        .then(response => {
-                            if (response == 'granted') {
-                                window.addEventListener('devicemotion', handleMotion, true);
-                            }
-                        })
-                        .catch(console.error);
-                } else {
-                    window.addEventListener('devicemotion', handleMotion, true);
-                }
+        // --- FULLSCREEN LOGIC ---
+        function toggleFullscreen() {
+            const container = document.getElementById('videoContainer');
+            if (!document.fullscreenElement) {
+                if(container.requestFullscreen) container.requestFullscreen();
+                else if(container.webkitRequestFullscreen) container.webkitRequestFullscreen(); // Safari
             } else {
-                btn.classList.remove('active');
-                window.removeEventListener('devicemotion', handleMotion, true);
+                if(document.exitFullscreen) document.exitFullscreen();
             }
         }
 
-        function handleMotion(event) {
-            let acceleration = event.accelerationIncludingGravity;
-            let curTime = new Date().getTime();
+        // --- MAIN LOGIC ---
+        function loadUserVideo(){
+            let v=document.getElementById('urlInput').value;
+            let id=v.match(/(?:youtu\.be\/|youtube\.com(?:\/embed\/|\/v\/|\/watch\?v=|\&v=))([\w-]{11})/);
+            if(id && id[1]) playRec(id[1]);
+        }
 
-            if ((curTime - lastUpdate) > 100) {
-                let diffTime = (curTime - lastUpdate);
-                lastUpdate = curTime;
+        // --- REC ENGINE ---
+        async function fetchRecs(id){
+            const l=document.getElementById('recList'); l.innerHTML='<div style="padding:20px;text-align:center;color:#666">Loading...</div>';
+            try{
+                let r=await fetch(`https://pipedapi.kavin.rocks/streams/${id}`);
+                let d=await r.json();
+                document.getElementById('vidTitle').innerText=d.title;
+                document.getElementById('vidAuthor').innerText=d.uploader;
+                let h='';
+                d.relatedStreams.filter(x=>x.type==='stream').forEach(x=>{
+                    h+=`<div class="rec-item" onclick="playRec('${x.url.split('v=')[1]}')">
+                        <img src="${x.thumbnail}" class="rec-thumb">
+                        <div class="rec-meta"><div class="rec-txt" style="font-weight:bold">${x.title}</div><div class="rec-txt" style="color:#aaa">${x.uploaderName}</div></div>
+                    </div>`
+                });
+                l.innerHTML=h;
+            }catch(e){ l.innerHTML='<div style="padding:20px;text-align:center;color:red">Error loading list</div>'; }
+        }
 
-                let speed = Math.abs(acceleration.x + acceleration.y + acceleration.z - lastX - lastY - lastZ) / diffTime * 10000;
+        function playRec(id){
+            document.getElementById('recSheet').style.display='none';
+            player.loadVideoById(id);
+            fetchRecs(id);
+        }
+        function toggleRecs(){
+            const s=document.getElementById('recSheet');
+            s.style.display=s.style.display==='flex'?'none':'flex';
+        }
 
-                if (speed > SHAKE_THRESHOLD * 50) { // Multiplier to adjust feel
-                    togglePlayPause();
+        // --- TIMER & SHAKE (Standard) ---
+        let timerInt,endT;
+        function openTimerModal(){document.getElementById('timerModal').style.display='flex'}
+        function setTimer(m){
+            document.getElementById('timerModal').style.display='none'; clearInterval(timerInt);
+            if(m===0){document.getElementById('sleepBtn').classList.remove('active'); document.getElementById('timerDisplay').style.display='none'; return;}
+            endT=Date.now()+m*60000;
+            document.getElementById('sleepBtn').classList.add('active');
+            document.getElementById('timerDisplay').style.display='block';
+            timerInt=setInterval(()=>{
+                let d=endT-Date.now();
+                if(d<=0){clearInterval(timerInt);player.pauseVideo();}
+                else{
+                    let mn=Math.floor(d/60000), sc=Math.floor((d%60000)/1000);
+                    document.getElementById('timerDisplay').innerText=(mn<10?"0"+mn:mn)+":"+(sc<10?"0"+sc:sc);
                 }
-
-                lastX = acceleration.x;
-                lastY = acceleration.y;
-                lastZ = acceleration.z;
-            }
+            },1000);
         }
 
-        let isCooldown = false;
-        function togglePlayPause() {
-            if(!player || isCooldown) return;
-            
-            // Cooldown prevents accidental double-shakes
-            isCooldown = true;
-            setTimeout(() => isCooldown = false, 1000);
-
-            let state = player.getPlayerState();
-            if(state === 1) { // Playing
-                player.pauseVideo();
-                navigator.vibrate(50); // Small vibration feedback
-            } else {
-                player.playVideo();
-                navigator.vibrate(50);
+        let shakeOn=false, shakeCnt=0, shakeTmr, lX=0,lY=0,lZ=0;
+        function toggleShake(){
+            shakeOn=!shakeOn; const b=document.getElementById('shakeBtn'), s=document.getElementById('shakeStatus');
+            if(shakeOn){
+                b.classList.add('active'); s.style.display='block';
+                if(typeof DeviceMotionEvent.requestPermission==='function')DeviceMotionEvent.requestPermission().then(r=>{if(r=='granted')window.addEventListener('devicemotion',handleM,true)});
+                else window.addEventListener('devicemotion',handleM,true);
+            }else{ b.classList.remove('active'); s.style.display='none'; window.removeEventListener('devicemotion',handleM,true); }
+        }
+        function handleM(e){
+            let a=e.accelerationIncludingGravity; if(!a)return;
+            if(Math.abs(a.x-lX)+Math.abs(a.y-lY)+Math.abs(a.z-lZ)>15){
+                shakeCnt++; clearTimeout(shakeTmr);
+                if(shakeCnt>=3){if(player){if(navigator.vibrate)navigator.vibrate(20);player.getPlayerState()===1?player.pauseVideo():player.playVideo();}shakeCnt=0;}
+                else shakeTmr=setTimeout(()=>shakeCnt=0,800);
             }
+            lX=a.x;lY=a.y;lZ=a.z;
         }
     </script>
 </body>
